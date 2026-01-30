@@ -3,60 +3,61 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_calculadora_juros_compostos/widgets/text_field_decoration_widget.dart';
 import 'package:flutter_calculadora_juros_compostos/models/financial_application.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-TextField getTextField(int id, TextEditingController valueController, FinancialApplication fa){
+TextField getTextField(int id, TextEditingController valueController, FinancialApplication fa, {
+  bool? isRateMonthly, VoidCallback? onToggleRate, bool? isPeriodMonthly, VoidCallback? onTogglePeriod,}){
+  double? parsePtBrDouble(String value) {
+    return double.tryParse(value.replaceAll(',', '.'));
+  }
   double? number;
   if(id==1){
     return TextField(
+      style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.black),
       controller: valueController,
       keyboardType: TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-      ],
-      decoration: getTextFieldDecoration("Digite o montante desejado (R\$): ", "0,00"),
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[.]')), FilteringTextInputFormatter.allow(RegExp(r'^\d+(,\d*)?$'),)],
+      decoration: getTextFieldDecoration("Montante (R\$): ", "0,00"),
       onChanged: (value) {
-        number = double.tryParse(value);
+        number = parsePtBrDouble(value);
         fa.setAmount(number ?? 0.0);
       },
     );
   }
   else if(id==2){
     return TextField(
+      style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.black),
       controller: valueController,
       keyboardType: TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-      ],
-      decoration: getTextFieldDecoration("Digite o capital inicial (R\$): ", "0,00"),
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[.]')), FilteringTextInputFormatter.allow(RegExp(r'^\d+(,\d*)?$'),)],
+      decoration: getTextFieldDecoration("Capital Inicial (R\$): ", "0,00"),
       onChanged: (value) {
-        number = double.tryParse(value);
+        number = parsePtBrDouble(value);
         fa.setInitialCapital(number ?? 0.0);
       },
     );
   }
   else if(id==3){
     return TextField(
+      style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.black),
       controller: valueController,
       keyboardType: TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-      ],
-      decoration: getTextFieldDecoration("Digite o aporte mensal (R\$): ", "0,00"),
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[.]')), FilteringTextInputFormatter.allow(RegExp(r'^\d+(,\d*)?$'),)],
+      decoration: getTextFieldDecoration("Aporte Mensal (R\$): ", "0,00"),
       onChanged: (value) {
-        number = double.tryParse(value);
+        number = parsePtBrDouble(value);
         fa.setMonthlyContribution(number ?? 0.0);
       },
     );
   }
   else if(id==4){
-    bool isRateMonthly = true;
+    final bool rateMonthly = isRateMonthly ?? true;
     return TextField(
+      style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.black),
       controller: valueController,
       keyboardType: TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-      ],
-      decoration: getTextFieldDecoration("Taxa de Juros (%)", "0,00").copyWith(
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[.]')), FilteringTextInputFormatter.allow(RegExp(r'^\d+(,\d*)?$'),)],
+      decoration: getTextFieldDecoration("Taxa de Juros (%):", "0,00").copyWith(
         suffixIcon: IntrinsicWidth(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -65,14 +66,8 @@ TextField getTextField(int id, TextEditingController valueController, FinancialA
               SizedBox(
                 width: 80,
                 child: TextButton(
-                  onPressed: () {
-                    isRateMonthly = !isRateMonthly;
-                  },
-                  child: Text(
-                    isRateMonthly ? "a.m." : "a.a.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.normal),
-                  ),
+                  onPressed: onToggleRate,
+                  child: Text(rateMonthly ? "a.m." : "a.a.", style: GoogleFonts.urbanist(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
                 ),
               ),
             ],
@@ -80,28 +75,26 @@ TextField getTextField(int id, TextEditingController valueController, FinancialA
         ),
       ),
       onChanged: (value) {
-        double? number = double.tryParse(value);
-        if(number != null){
-          isRateMonthly ? () : (
-            number = (pow((1+number/100), 1 / 12)-1)*100
-          );
-          fa.setInterestRate(number);
+        double? rate = parsePtBrDouble(value);
+        if (rate == null) {
+          fa.setInterestRate(0);
+          return;
         }
-        else{
-          fa.setInterestRate(number ?? 0.0);
+        if (!rateMonthly) {
+          rate = (pow(1 + rate / 100, 1 / 12) - 1) * 100;
         }
+        fa.setInterestRate(rate);
       },
     );
   }
   else{
-    bool isPeriodMonthly = true;
+    final bool periodMonthly = isPeriodMonthly ?? true;
     return TextField(
+      style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.black),
       controller: valueController,
       keyboardType: TextInputType.number, 
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly, 
-      ],
-      decoration: getTextFieldDecoration("Digite o período: ", "0").copyWith(
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      decoration: getTextFieldDecoration("Período: ", "0").copyWith(
         suffixIcon: IntrinsicWidth(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -110,14 +103,8 @@ TextField getTextField(int id, TextEditingController valueController, FinancialA
               SizedBox(
                 width: 80,
                 child: TextButton(
-                  onPressed: () {
-                    isPeriodMonthly = !isPeriodMonthly;
-                  },
-                  child: Text(
-                    isPeriodMonthly ? "meses" : "anos",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.normal),
-                  ),
+                  onPressed: onTogglePeriod,
+                  child: Text(periodMonthly ? "meses" : "anos", style: GoogleFonts.urbanist(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
                 ),
               ),
             ],
@@ -126,15 +113,14 @@ TextField getTextField(int id, TextEditingController valueController, FinancialA
       ),
       onChanged: (value) {
         int? period = int.tryParse(value);
-        if(period != null){
-          isPeriodMonthly ? () : (
-            period*=12
-          );
-          fa.setPeriod(period);
+        if (period == null) {
+          fa.setPeriod(0);
+          return;
         }
-        else{
-          fa.setPeriod(period ?? 0);
+        if (!periodMonthly) {
+          period *= 12;
         }
+        fa.setPeriod(period);
       },
     );
   }

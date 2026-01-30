@@ -13,7 +13,7 @@ class ButtonWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: SizedBox(
-        width: double.infinity,
+        width: 300,
         height: 70,
         child: ElevatedButton(
         onPressed: onPressed,
@@ -24,7 +24,7 @@ class ButtonWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(12)
           )
         ),
-        child: Text(text, style: GoogleFonts.urbanist(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)
+        child: Text(text, style: GoogleFonts.urbanist(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)
         )
       )),
     );

@@ -10,9 +10,17 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen()
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          toolbarHeight: 70,
+          iconTheme: IconThemeData(
+            size: 40,
+          ),
+        ),
+      ),
+      home: const HomeScreen(),
     );
   }
 }

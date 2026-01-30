@@ -9,7 +9,6 @@ class InterestRateScreen extends StatefulWidget{
   @override
   _InterestRateScreenState createState() => _InterestRateScreenState();
 }
-
 class _InterestRateScreenState extends State<InterestRateScreen>{
   String result="", investedCapital="", interest="";
   final TextEditingController _amountController = TextEditingController();
@@ -17,8 +16,8 @@ class _InterestRateScreenState extends State<InterestRateScreen>{
   final TextEditingController _monthlyContributionController = TextEditingController();
   final TextEditingController _periodController = TextEditingController();
   FinancialApplication fa = FinancialApplication(initialCapital: 0, monthlyContribution: 0, interestRate: 0, period: 0, amount: 0, interest: 0, investedCapital: 0);
-  double? amount, initialCapital, monthlyContribution;
-  int? period;
+  bool isRateMonthly = true;
+  bool isPeriodMonthly = true;
   @override
   void dispose() {
     _amountController.dispose();
@@ -62,76 +61,105 @@ class _InterestRateScreenState extends State<InterestRateScreen>{
         }
         i = novoI;
       }
+      num annualRate = (pow(1+i, 12)-1)*100;
       fa.setInterestRate(i*100);
       fa.setInvestedCapital(initialCapital+monthlyContribution*period);
       fa.setInterest(fa.getAmount()-fa.getInvestedCapital());
+      if(fa.getInterest()<0){
+        fa.setInterest(0);
+      }
       setState(() {
-        result="Rentabilidade: R\$ ${fa.getInterestRate().toStringAsFixed(2)}% ao mês";
-        investedCapital="Capital Investido: R\$ ${fa.getInvestedCapital().toStringAsFixed(2)}";
-        interest="Juros: R\$ ${fa.getInterest().toStringAsFixed(2)}";
+        result="Rentabilidade: ${fa.getInterestRate().toStringAsFixed(2).replaceAll('.', ',')}% a.m.\n(${annualRate.toStringAsFixed(2).replaceAll('.', ',')}% a.a.)";
+        investedCapital="Capital Investido: R\$ ${fa.getInvestedCapital().toStringAsFixed(2).replaceAll('.', ',')}";
+        interest="Juros: R\$ ${fa.getInterest().toStringAsFixed(2).replaceAll('.', ',')}";
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Cálculo de Rentabilidade", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),),
-        backgroundColor: Colors.yellow,
-        centerTitle: true,
-        shadowColor: Colors.black,
-        elevation: 6,
-      ),
-      body: SingleChildScrollView(
-        reverse: true,
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-          children: [
-            const SizedBox(height: 20),
-            getTextField(1, _amountController, fa),
-            const SizedBox(height: 20),
-            getTextField(2, _initialCapitalController, fa),
-            const SizedBox(height: 20),
-            getTextField(3, _monthlyContributionController, fa),
-            const SizedBox(height: 20),
-            getTextField(5, _periodController, fa),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: SizedBox(
-                width: 200,
-                height: 60,
-                child: ElevatedButton(
-                onPressed: (){
-                  _calculateInterestRate(fa.getAmount(), fa.getInitialCapital(), fa.getMonthlyContribution(), fa.getPeriod());
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Cálculo de Rentabilidade", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),),
+          backgroundColor: Colors.yellow[600],
+          centerTitle: true,
+          shadowColor: Colors.black,
+          elevation: 6,
+        ),
+        body: SingleChildScrollView(
+          reverse: true,
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Center(
+                child: Image.asset('assets/rateIcon.png', width: 150,),
+              ),
+              const SizedBox(height: 40),
+              getTextField(1, _amountController, fa),
+              const SizedBox(height: 30),
+              getTextField(2, _initialCapitalController, fa),
+              const SizedBox(height: 30),
+              getTextField(3, _monthlyContributionController, fa),
+              const SizedBox(height: 30),
+              getTextField(5, _periodController, fa,
+                isPeriodMonthly: isPeriodMonthly,
+                onTogglePeriod: () {
+                  setState(() {
+                    isPeriodMonthly = !isPeriodMonthly;
+                  });
+                  final int? value = int.tryParse(_periodController.text);
+                  if (value != null) {
+                    fa.setPeriod(isPeriodMonthly ? value : value * 12);
+                  }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[600],
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: SizedBox(
+                  width: 200,
+                  height: 60,
+                  child: ElevatedButton(
+                  onPressed: (){
+                    FocusScope.of(context).unfocus();
+                    _calculateInterestRate(fa.getAmount(), fa.getInitialCapital(), fa.getMonthlyContribution(), fa.getPeriod());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.yellow[600],
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)
+                    )
+                  ),
+                  child: Text("Calcular", style: GoogleFonts.urbanist(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)
                   )
-                ),
-                child: Text("Calcular", style: GoogleFonts.urbanist(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)
-                )
+                )),
+              ),
+              const SizedBox(height: 20),
+              Text(result, textAlign: TextAlign.center, style: GoogleFonts.urbanist(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               )),
-            ),
-            const SizedBox(height: 20),
-            Text(result, style: GoogleFonts.urbanist(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            )),
-            Text(investedCapital, style: GoogleFonts.urbanist(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            )),
-            Text(interest, style: GoogleFonts.urbanist(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            )),
-          ],
-        )),
+              const SizedBox(height: 10),
+              Text(investedCapital, textAlign: TextAlign.center, style: GoogleFonts.urbanist(
+                fontSize: 18,
+                fontWeight: FontWeight.normal,
+              )),
+              const SizedBox(height: 5),
+              Text(interest, textAlign: TextAlign.center, style: GoogleFonts.urbanist(
+                fontSize: 18,
+                fontWeight: FontWeight.normal,
+              )),
+            ],
+          )),
+        ),
       ),
     );
   }
