@@ -20,58 +20,61 @@ class HomeScreen extends StatelessWidget {
         shadowColor: Colors.black,
         elevation: 6,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-        children: [
-          Center(
-            child: Image.asset('assets/money.png', width: 300,),
-          ),
-          const SizedBox(height: 12),
-          Text("Encontre o caminho da liberdade financeira!",
-          textAlign: TextAlign.center,
-          style: GoogleFonts.audiowide(
-            fontSize: 20,
-            fontWeight: FontWeight.normal,
-          )),
-          const SizedBox(height: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ButtonWidget(text: "Montante", color: Colors.red, onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AmountScreen()),
-                ); 
-              }, textColor: Colors.black),
-              ButtonWidget(text: "Capital Inicial", color: Colors.orange, onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const InitialCapitalScreen()),
-                );
-              }, textColor: Colors.black),
-              ButtonWidget(text: "Rentabilidade", color: Colors.yellow, onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const InterestRateScreen()),
-                );
-              }, textColor: Colors.black),
-              ButtonWidget(text: "Aporte Mensal", color: Colors.green, onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MonthlyContributionScreen()),
-                );
-              }, textColor: Colors.black),
-              ButtonWidget(text: "Período", color: Colors.blue, onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PeriodScreen()),
-                );
-              }, textColor: Colors.black),
-            ]
-          )
-        ],
-      )),
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+          children: [
+            Center(
+              child: Image.asset('assets/money.png', width: 300,),
+            ),
+            const SizedBox(height: 12),
+            Text("Encontre o caminho da liberdade financeira!",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.audiowide(
+              fontSize: 20,
+              fontWeight: FontWeight.normal,
+            )),
+            const SizedBox(height: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ButtonWidget(text: "Montante", color: Colors.red, onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AmountScreen()),
+                  ); 
+                }, textColor: Colors.black),
+                ButtonWidget(text: "Capital Inicial", color: Colors.orange, onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const InitialCapitalScreen()),
+                  );
+                }, textColor: Colors.black),
+                ButtonWidget(text: "Rentabilidade", color: Colors.yellow, onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const InterestRateScreen()),
+                  );
+                }, textColor: Colors.black),
+                ButtonWidget(text: "Aporte Mensal", color: Colors.green, onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MonthlyContributionScreen()),
+                  );
+                }, textColor: Colors.black),
+                ButtonWidget(text: "Período", color: Colors.blue, onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PeriodScreen()),
+                  );
+                }, textColor: Colors.black),
+              ]
+            )
+          ],
+        )),
+      ),
     );
   }
 }

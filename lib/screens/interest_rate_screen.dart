@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calculadora_juros_compostos/models/financial_application.dart';
+import 'package:flutter_calculadora_juros_compostos/widgets/text_field_widget.dart';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/services.dart';
 
 class InterestRateScreen extends StatefulWidget{
   const InterestRateScreen({super.key});
@@ -78,126 +78,61 @@ class _InterestRateScreenState extends State<InterestRateScreen>{
     return Scaffold(
       appBar: AppBar(
         title: const Text("Cálculo de Rentabilidade", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),),
-        backgroundColor: Colors.yellow[700],
+        backgroundColor: Colors.yellow,
         centerTitle: true,
         shadowColor: Colors.black,
         elevation: 6,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-        children: [
-          const SizedBox(height: 20),
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-            ],
-            decoration: InputDecoration(
-              labelText: "Digite o montante desejado (R\$): ",
-              hintText: "0.00",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (value) {
-              setState(() {
-                amount = double.tryParse(value);
-                fa.setAmount(amount ?? 0.0);
-              });
-            },
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: _initialCapitalController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-            ],
-            decoration: InputDecoration(
-              labelText: "Digite o capital inicial (R\$): ",
-              hintText: "0.00",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (value) {
-              setState(() {
-                initialCapital = double.tryParse(value);
-                fa.setInitialCapital(initialCapital ?? 0.0);
-              });
-            },
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: _monthlyContributionController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-            ],
-            decoration: InputDecoration(
-              labelText: "Digite o aporte mensal (R\$): ",
-              hintText: "0.00",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (value) {
-              setState(() {
-                monthlyContribution = double.tryParse(value);
-                fa.setMonthlyContribution(monthlyContribution ?? 0.0);
-              });
-            },
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: _periodController,
-            keyboardType: TextInputType.number, 
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly, 
-            ],
-            decoration: const InputDecoration(
-              labelText: "Digite o período (meses): ",
-              hintText: "0",
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (value) {
-              setState(() {
-                period = int.tryParse(value);
-                fa.setPeriod(period ?? 0);
-              });
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: SizedBox(
-              width: 200,
-              height: 60,
-              child: ElevatedButton(
-              onPressed: (){
-                _calculateInterestRate(fa.getAmount(), fa.getInitialCapital(), fa.getMonthlyContribution(), fa.getPeriod());
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[600],
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+          children: [
+            const SizedBox(height: 20),
+            getTextField(1, _amountController, fa),
+            const SizedBox(height: 20),
+            getTextField(2, _initialCapitalController, fa),
+            const SizedBox(height: 20),
+            getTextField(3, _monthlyContributionController, fa),
+            const SizedBox(height: 20),
+            getTextField(5, _periodController, fa),
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: SizedBox(
+                width: 200,
+                height: 60,
+                child: ElevatedButton(
+                onPressed: (){
+                  _calculateInterestRate(fa.getAmount(), fa.getInitialCapital(), fa.getMonthlyContribution(), fa.getPeriod());
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[600],
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)
+                  )
+                ),
+                child: Text("Calcular", style: GoogleFonts.urbanist(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)
                 )
-              ),
-              child: Text("Calcular", style: GoogleFonts.urbanist(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)
-              )
+              )),
+            ),
+            const SizedBox(height: 20),
+            Text(result, style: GoogleFonts.urbanist(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             )),
-          ),
-          const SizedBox(height: 20),
-          Text(result, style: GoogleFonts.urbanist(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          )),
-          Text(investedCapital, style: GoogleFonts.urbanist(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          )),
-          Text(interest, style: GoogleFonts.urbanist(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          )),
-        ],
-      )),
+            Text(investedCapital, style: GoogleFonts.urbanist(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            )),
+            Text(interest, style: GoogleFonts.urbanist(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            )),
+          ],
+        )),
+      ),
     );
   }
 }
