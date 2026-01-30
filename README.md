@@ -1,3 +1,3 @@
-# flutter_calculadora_juros_compostos
+# Flutter_Cash_Calc
 
-A new Flutter project.
+My second Flutter + Dart project.
