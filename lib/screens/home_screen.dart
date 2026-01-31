@@ -6,6 +6,7 @@ import 'package:flutter_calculadora_juros_compostos/screens/interest_rate_screen
 import 'package:flutter_calculadora_juros_compostos/screens/monthly_contribution_screen.dart';
 import 'package:flutter_calculadora_juros_compostos/screens/period_screen.dart';
 import 'package:flutter_calculadora_juros_compostos/widgets/button_widget.dart';
+import 'package:page_transition/page_transition.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -48,35 +49,71 @@ class HomeScreen extends StatelessWidget {
                   ButtonWidget(text: "Montante", color: Colors.red, onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const AmountScreen()),
+                      PageTransition(
+                        type: PageTransitionType.scale,
+                        alignment: Alignment.bottomCenter,
+                        duration: const Duration(milliseconds: 400),
+                        reverseDuration: const Duration(milliseconds: 400),
+                        curve: Curves.elasticOut,
+                        child: const AmountScreen()
+                      ),
+                      
                     ); 
                   }, textColor: Colors.white),
                   const SizedBox(height: 6),
                   ButtonWidget(text: "Capital Inicial", color: Colors.orange, onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const InitialCapitalScreen()),
+                      PageTransition(
+                        type: PageTransitionType.scale,
+                        alignment: Alignment.bottomCenter,
+                        duration: const Duration(milliseconds: 400),
+                        reverseDuration: const Duration(milliseconds: 400),
+                        curve: Curves.elasticOut,
+                        child: const InitialCapitalScreen()
+                      ),
                     );
                   }, textColor: Colors.white),
                   const SizedBox(height: 6),
                   ButtonWidget(text: "Rentabilidade", color: Colors.yellow[600], onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const InterestRateScreen()),
+                      PageTransition(
+                        type: PageTransitionType.scale,
+                        alignment: Alignment.bottomCenter,
+                        duration: const Duration(milliseconds: 400),
+                        reverseDuration: const Duration(milliseconds: 400),
+                        curve: Curves.elasticOut,
+                        child: const InterestRateScreen()
+                      ),
                     );
                   }, textColor: Colors.white),
                   const SizedBox(height: 6),
                   ButtonWidget(text: "Aporte Mensal", color: Colors.green, onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const MonthlyContributionScreen()),
+                      PageTransition(
+                        type: PageTransitionType.scale,
+                        alignment: Alignment.bottomCenter,
+                        duration: const Duration(milliseconds: 400),
+                        reverseDuration: const Duration(milliseconds: 400),
+                        curve: Curves.elasticOut,
+                        child: const MonthlyContributionScreen()
+                      ),
                     );
                   }, textColor: Colors.white),
                   const SizedBox(height: 6),
                   ButtonWidget(text: "Período", color: Colors.blue, onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const PeriodScreen()),
+                      PageTransition(
+                        type: PageTransitionType.scale,
+                        alignment: Alignment.bottomCenter,
+                        duration: const Duration(milliseconds: 400),
+                        reverseDuration: const Duration(milliseconds: 400),
+                        curve: Curves.elasticOut,
+                        child: const PeriodScreen()
+                      ),
                     );
                   }, textColor: Colors.white),
                 ]
